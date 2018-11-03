@@ -53,6 +53,8 @@ public class SiigoLogica {
     private LogDAO logDAO;
     @EJB
     private NotificacionCorreoLogica notificacionCorreoLogica;
+    @EJB
+    private EnviarSMSLogica enviarSMSLogica;
 
     private static final Logger LOG = Logger.getLogger(SiigoLogica.class.getSimpleName());
 
@@ -94,7 +96,8 @@ public class SiigoLogica {
                         error = false;
                         guardarTrazaFactura(factura, Constantes.InvoiceState.received.toString(), "");
                         if (cliente.getCliCorreo() != null) {
-                            notificacionCorreoLogica.enviarNotificacionCorreo(EmailConstantes.NOTIFICACION_SIIGO, MessageFormat.format(EmailConstantes.EMAIL_OK_SAVE_INVOICE, factura.getFacId().toString(),factura.getFacId().toString()), cliente.getCliCorreo());
+                            notificacionCorreoLogica.enviarNotificacionCorreo(EmailConstantes.NOTIFICACION_SIIGO, MessageFormat.format(EmailConstantes.EMAIL_OK_SAVE_INVOICE, factura.getFacId().toString(), factura.getFacId().toString()), cliente.getCliCorreo());
+                            enviarSMSLogica.enviarMensaje(Constantes.NUMERO_CELULAR, Constantes.MENSAJE);
                         }
                     } else {
                         mensaje = "No se pudo almacenar el archivo asociado a la factura";
@@ -150,6 +153,7 @@ public class SiigoLogica {
                     errorList.add("Error al firmar el documento");
                     responseModel.setErrorList(errorList);
                     notificacionCorreoLogica.enviarNotificacionCorreo(EmailConstantes.NOTIFICACION_SIIGO, EmailConstantes.EMAIL_ERROR_SING_FACTURA, "admin@siigo.com");
+                    enviarSMSLogica.enviarMensaje(Constantes.NUMERO_CELULAR, Constantes.MENSAJE);
                 } else {
                     // [TODO] Implementar actualizacion de UBL de factura asumiendo firma exitosa y cambio de estado
                     factura.setFacState(Constantes.InvoiceState.signed.toString());
@@ -325,9 +329,9 @@ public class SiigoLogica {
     public Response consultarLogsFactura(final Long idFactura) {
         MensajeDTO mensajeDTO = new MensajeDTO();
         mensajeDTO.setCodigo(Constantes.StatusResponse.ERROR.toString());
-        
+
         List<Log> listaLogs = logDAO.consultarLogsFactura(idFactura);
-        if(listaLogs!=null && !listaLogs.isEmpty()){
+        if (listaLogs != null && !listaLogs.isEmpty()) {
             mensajeDTO.setObject(TransformacionDozer.transformar(listaLogs, LogDTO.class));
             mensajeDTO.setCodigo(Constantes.StatusResponse.OK.toString());
         }

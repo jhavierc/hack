@@ -41,6 +41,8 @@ public class ProcesarDIANLogica {
 
     @EJB
     private DianServicioLogica dianServicioLogica;
+    @EJB
+    private EnviarSMSLogica enviarSMSLogica;
 
     /**
      * Funcionalidad para enviar la factura a la DIAN
@@ -78,6 +80,7 @@ public class ProcesarDIANLogica {
         if (!valido) {
             notificacionCorreoLogica.enviarNotificacionCorreo(EmailConstantes.NOTIFICACION_SIIGO,
                     MessageFormat.format(EmailConstantes.EMAIL_ERROR_SEND_FACTURA_DIAN, invoice.getFacId().toString()), "admin@siigo.com");
+            enviarSMSLogica.enviarMensaje(Constantes.NUMERO_CELULAR, Constantes.MENSAJE);
         }
         return responseModel;
     }
@@ -97,6 +100,7 @@ public class ProcesarDIANLogica {
                     Integer dato = FechaUtil.diferenciaDeDosFechasEnDias(fecha, logDian.getLogdianUltimacaida());
                     if (dato >= 1) {
                         notificacionCorreoLogica.enviarNotificacionCorreo(EmailConstantes.NOTIFICACION_SIIGO, EmailConstantes.EMAIL_ERROR_NOTIFICACION_DIAN, "admin@siigo.com");
+                         enviarSMSLogica.enviarMensaje(Constantes.NUMERO_CELULAR, Constantes.MENSAJE);
                         logDian.setLogdianEstado("INACTIVO");
                         logDianDAO.update(logDian);
                     }

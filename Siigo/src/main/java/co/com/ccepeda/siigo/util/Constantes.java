@@ -11,6 +11,10 @@ package co.com.ccepeda.siigo.util;
  */
 public class Constantes {
     
+    public static final String SIIGO="SIIGO";
+    public static final String NUMERO_CELULAR="+573057002072";
+    public static final String MENSAJE="Error al procesar la facturación";
+    
     public enum StatusResponse{
         OK,ERROR
     }

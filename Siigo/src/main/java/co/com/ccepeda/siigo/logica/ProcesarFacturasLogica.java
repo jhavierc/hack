@@ -46,6 +46,8 @@ public class ProcesarFacturasLogica {
     private ProcesarDIANLogica procesarDIANLogica;
     @EJB
     private ConfirmacionDIANLogica confirmacionDIANLogica;
+    @EJB
+    private EnviarSMSLogica enviarSMSLogica;
 
     private static final Logger LOG = Logger.getLogger(ProcesarFacturasLogica.class.getSimpleName());
 
