@@ -46,14 +46,15 @@ public class SiigoLogica {
 
     /**
      * Lógica para la creacion de las facturas
+     *
      * @param invoiceModel
-     * @return 
+     * @return
      */
     public Response saveInvoice(InvoiceModel invoiceModel) {
-        
+
         boolean error = true;
         MensajeDTO mensajeDTO = new MensajeDTO();
-        mensajeDTO.setCodigo(Constantes.StatusResponse.OK.toString());
+        mensajeDTO.setCodigo(Constantes.StatusResponse.ERROR.toString());
         Factura factura = TransformacionDozer.transformar(invoiceModel, Factura.class);
         facturaDAO.create(factura);
 
@@ -75,17 +76,50 @@ public class SiigoLogica {
         } else {
             mensaje = "Debe adjuntar el pdf";
         }
-        if(error){
+        if (error) {
             mensajeDTO.setMensaje(mensaje);
         } else {
-            mensajeDTO.setMensaje(MessageFormat.format(mensaje,factura.getFacId()));
+            mensajeDTO.setMensaje(MessageFormat.format(mensaje, factura.getFacId()));
+        }
+        return Response.ok(mensajeDTO, MediaType.APPLICATION_JSON).build();
+    }
+
+    /**
+     * Funcionalidad para fimar una peticion con el certificado
+     * @param idinvoice
+     * @return 
+     */
+    public Response singInvoice(Long idinvoice) {
+        
+        LOG.log(Level.INFO, "==== Sign adjunto=====");
+        MensajeDTO mensajeDTO = new MensajeDTO();
+        mensajeDTO.setCodigo(Constantes.StatusResponse.ERROR.toString());
+        
+        Factura factura = facturaDAO.read(idinvoice);
+        if(factura!=null){
+            if(factura.getCliente().getCliCertificado()!=null){
+                mensajeDTO.setMensaje("Para el final");
+            } else {
+                mensajeDTO.setMensaje("El cliente no tiene parametrizado el Certificado");
+            }
+        } else {
+            mensajeDTO.setMensaje(MessageFormat.format("La factura con id {0}, no se encuentra registrada", idinvoice));
         }
         return Response.ok(mensajeDTO, MediaType.APPLICATION_JSON).build();
     }
 
     public Response sendInvoice(InvoiceModel invoiceModel) {
-        ResponseModel responseModel = new ResponseModel();
-        return Response.ok(responseModel, MediaType.APPLICATION_JSON).build();
+          LOG.log(Level.INFO, "==== Send adjunto=====");
+        MensajeDTO mensajeDTO = new MensajeDTO();
+        mensajeDTO.setCodigo(Constantes.StatusResponse.ERROR.toString());
+        
+        
+        
+        
+        
+        
+        mensajeDTO.setMensaje("Para el final");
+        return Response.ok(mensajeDTO, MediaType.APPLICATION_JSON).build();
     }
 
     /**
@@ -99,11 +133,11 @@ public class SiigoLogica {
     private String guardarAdjunto(byte[] pdf, final Long idcliente, final Long idfactura) {
         LOG.log(Level.INFO, "==== Guardando adjunto=====");
         String path = null;
-        
+
         try {
             path = generarUrlArchivo(pdf, idcliente, idfactura);
             LOG.log(Level.INFO, ">>> Path archivo pdf >> {0}", path);
-            FileOutputStream fileOut = new FileOutputStream(path+"\\adjunto.pdf");
+            FileOutputStream fileOut = new FileOutputStream(path + "\\adjunto.pdf");
             BufferedOutputStream buffer = new BufferedOutputStream(fileOut);
             buffer.write(pdf);
             buffer.flush();

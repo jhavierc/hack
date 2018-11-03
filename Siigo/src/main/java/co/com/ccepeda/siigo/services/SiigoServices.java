@@ -17,6 +17,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PUT;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -28,17 +29,32 @@ import javax.ws.rs.core.Response;
 @Path("siigoServices")
 @Stateless
 public class SiigoServices {
-    
+
     @EJB
     private SiigoLogica siigoLogica;
-    
 
-   @POST
-   @Path("/SaveInvoice")
-   @Consumes(MediaType.APPLICATION_JSON)
-   @Produces(MediaType.APPLICATION_JSON)
-   public Response saveInvoice(InvoiceModel invoiceModel){
-       return siigoLogica.saveInvoice(invoiceModel);
-   }
+    /**
+     * Servicio que permite registrar una factura
+     *
+     * @param invoiceModel
+     * @return
+     */
+    @POST
+    @Path("/SaveInvoice")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response saveInvoice(InvoiceModel invoiceModel) {
+        return siigoLogica.saveInvoice(invoiceModel);
+    }
+
+    /**
+     * Servicio que permite firmar un archivo
+     * @param id Identificador de la factura a firmar
+     * @return 
+     */
+    @GET
+    @Path("/SignInvoice")
+    public Response saveInvoice(@PathParam("id") Long id) {
+        return siigoLogica.singInvoice(id);
+    }
 }
-
