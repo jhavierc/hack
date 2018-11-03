@@ -1,0 +1,35 @@
+<div class="section section-basic">
+    <div class="container">
+        <h3 class="title">Cargar Facturas</h3>
+        <div class="row">
+
+
+            <form #formFactura="ngForm" (ngSubmit)="onSubmit()">
+                <p>
+                    <label class="control-label">Prefix</label>
+                    <input type="text" #txtprefix="ngModel" name="txtprefix" [(ngModel)]="invoice.prefix" required
+                        class="form-control">
+                    <span *ngIf="!txtprefix.valid && txtprefix.touched">El nombre es obligatorio</span>
+                </p>
+                <p>
+                    <label class="control-label">Descripción</label>
+                    <textarea #txtcosecutivo="ngModel" name="txtcosecutivo" [(ngModel)]="artist.consecutive" required
+                        class="form-control"></textarea>
+                    <span *ngIf="!txtcosecutivo.valid && txtcosecutivo.touched">La txtcosecutivo es obligatorio</span>
+                </p>
+                <p>
+                    <label class="control-label">Ubl</label>
+                    <textarea #txtubl="ngModel" name="txtubl" [(ngModel)]="artist.ubl" required
+                        class="form-control"></textarea>
+                    <span *ngIf="!txtubl.valid && txtubl.touched">La ubl es obligatorio</span>
+                </p>
+
+
+
+                <input type="submit" name="" value="Guardar" [disabled]="!formFactura.form.valid" class="btn btn-success">
+            </form>
+        
+
+    </div>
+</div>
+</div>
