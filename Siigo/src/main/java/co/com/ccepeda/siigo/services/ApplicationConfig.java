@@ -29,6 +29,7 @@ public class ApplicationConfig extends Application {
      * If required, comment out calling this method in getClasses().
      */
     private void addRestResourceClasses(Set<Class<?>> resources) {
+        resources.add(co.com.ccepeda.siigo.services.ServiciosAdministrador.class);
         resources.add(co.com.ccepeda.siigo.services.SiigoServices.class);
     }
     

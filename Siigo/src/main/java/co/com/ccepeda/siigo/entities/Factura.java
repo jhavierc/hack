@@ -43,6 +43,7 @@ import javax.validation.constraints.Size;
     , @NamedQuery(name = "Factura.findByFacUrlfile", query = "SELECT f FROM Factura f WHERE f.facUrlfile = :facUrlfile")
     , @NamedQuery(name = "Factura.findByFacCreateddate", query = "SELECT f FROM Factura f WHERE f.facCreateddate = :facCreateddate")
     , @NamedQuery(name = "Factura.findByFacStateReceived", query = "SELECT f FROM Factura f WHERE f.facState = 'received'")
+    , @NamedQuery(name = "Factura.findByFacStateSended", query = "SELECT f FROM Factura f WHERE f.facState = 'sended'")
     , @NamedQuery(name = "Factura.findByFacSendstate", query = "SELECT f FROM Factura f WHERE f.facSendstate = :facSendstate")
     , @NamedQuery(name = "Factura.findByFacAction", query = "SELECT f FROM Factura f WHERE f.facAction = :facAction")
 

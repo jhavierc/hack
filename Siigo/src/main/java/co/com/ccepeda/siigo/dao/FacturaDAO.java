@@ -23,4 +23,8 @@ public class FacturaDAO extends GenericoDAO<Factura>{
     public List<Factura> consultarFacturasCargadas(){
         return this.filtrar("Factura.findByFacStateReceived", null);
     }
+    
+    public List<Factura> consultarFacturasPendienteDIAN(){
+        return this.filtrar("Factura.findByFacStateSended", null);
+    }
 }
