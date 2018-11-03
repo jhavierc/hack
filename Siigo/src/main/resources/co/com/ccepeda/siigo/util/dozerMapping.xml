@@ -18,6 +18,10 @@
         <class-a>co.com.ccepeda.siigo.entities.Factura</class-a>
         <class-b>co.com.ccepeda.siigo.dto.InvoiceModel</class-b>
         <field>
+            <a>facId</a>
+            <b>id</b>
+        </field>
+        <field>
             <a>facPrefix</a>
             <b>prefix</b>
         </field>

@@ -17,6 +17,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class InvoiceModel {
     
+    public Long id;
     public String prefix;
     public long consecutive;
     public String ubl;
@@ -26,5 +27,7 @@ public class InvoiceModel {
     public Constantes.CustomerSendState customerSendState;
     public Constantes.CustomerAction customerAction;
     public ClienteDTO cliente;
+    
+    public boolean tieneAdjunto;
     
 }

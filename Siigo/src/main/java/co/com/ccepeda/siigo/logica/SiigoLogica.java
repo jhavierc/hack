@@ -25,6 +25,7 @@ import co.com.ccepeda.siigo.util.TransformacionDozer;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.nio.file.Files;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -276,5 +277,49 @@ public class SiigoLogica {
         responseModel.setErrorList(errorList);
        
         return responseModel;
+    }
+    
+    
+    /**
+     * Funcionalidad que permite listar todas las facturas del sistema
+     * @return 
+     */
+    public Response consultarFacturasCargadas(){
+        MensajeDTO mensajeDTO = new MensajeDTO();
+        mensajeDTO.setCodigo(Constantes.StatusResponse.ERROR.toString());
+        List<Factura> listaFacturas = facturaDAO.listarAll();
+        List<InvoiceModel> listaSalida=new ArrayList();
+        if(listaFacturas!=null){
+            mensajeDTO.setCodigo(Constantes.StatusResponse.OK.toString());
+            
+            for (Factura factura : listaFacturas) {
+                InvoiceModel invoiceModel =  TransformacionDozer.transformar(factura, InvoiceModel.class);
+                if(factura.getFacUrlfile()!=null){
+                    invoiceModel.setTieneAdjunto(true);
+                }
+                listaSalida.add(invoiceModel);
+            }
+            mensajeDTO.setObject(listaSalida);
+        } else {
+            mensajeDTO.setMensaje("No se encontraron facturas registradas");
+        }
+         return Response.ok(mensajeDTO, MediaType.APPLICATION_JSON).build();
+    }
+    
+    public byte[] descargarArchivo(final Long idFactura){
+        byte[] datos = null;
+        Factura factura = facturaDAO.read(idFactura);
+        if(factura!=null){
+            if(factura.getFacUrlfile()!=null){
+                try {
+                    datos = Files.readAllBytes(new File(factura.getFacUrlfile()+"\\adjunto.pdf").toPath());
+                    
+                } catch (Exception e) {
+                    LOG.log(Level.INFO, ">>> Error al leer el archivo >>");
+                }
+            }
+        }
+        return datos;
+        
     }
 }

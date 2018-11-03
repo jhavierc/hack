@@ -46,5 +46,20 @@ public class SiigoServices {
     public Response saveInvoice(InvoiceModel invoiceModel) {
         return siigoLogica.saveInvoice(invoiceModel);
     }
+    
+    @GET
+    @Path("/listFact")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response listarFacturas() {
+        return siigoLogica.consultarFacturasCargadas();
+    }
+    
+    @GET
+    @Path("/adjunto/{id}.pdf")
+    @Produces("application/pdf")
+    public byte[] descargarDatos(@PathParam("id") Long idFactura) {
+        return siigoLogica.descargarArchivo(idFactura);
+    }
+    
 
 }

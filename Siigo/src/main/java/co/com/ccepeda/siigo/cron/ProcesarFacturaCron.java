@@ -101,7 +101,7 @@ public class ProcesarFacturaCron {
         return null;
     }
 
-    @Schedule(second = "0", minute = "/15", hour = "*", persistent = true)
+    @Schedule(second = "0", minute = "*/15", hour = "*", persistent = true)
     //@TransactionAttribute(TransactionAttributeType.NEVER)
     public void procesarCarguesFacturas() {
         
