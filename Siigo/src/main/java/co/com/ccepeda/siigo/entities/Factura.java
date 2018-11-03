@@ -46,6 +46,7 @@ import javax.validation.constraints.Size;
     , @NamedQuery(name = "Factura.findByFacStateSended", query = "SELECT f FROM Factura f WHERE f.facState = 'sended'")
     , @NamedQuery(name = "Factura.findByFacSendstate", query = "SELECT f FROM Factura f WHERE f.facSendstate = :facSendstate")
     , @NamedQuery(name = "Factura.findByFacAction", query = "SELECT f FROM Factura f WHERE f.facAction = :facAction")
+    , @NamedQuery(name = "Factura.findByIdMaxCien", query = "SELECT f FROM Factura f WHERE rownum<=100 order by f.facId desc")
 
 })
 public class Factura implements Serializable {

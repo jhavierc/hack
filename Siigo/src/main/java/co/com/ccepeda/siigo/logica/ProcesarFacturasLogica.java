@@ -58,8 +58,8 @@ public class ProcesarFacturasLogica {
 
             while (factura != null) {
 
-                LOG.log(Level.INFO, ">>>> Factura >>> hilo {0} procesando cargue {1}", new Object[]{hilo, factura.getFacId()});
-                LOG.log(Level.INFO, "Tiempo inicio cargue {0}", System.currentTimeMillis());
+                //LOG.log(Level.INFO, ">>>> Factura >>> hilo {0} procesando cargue {1}", new Object[]{hilo, factura.getFacId()});
+                //LOG.log(Level.INFO, "Tiempo inicio cargue {0}", System.currentTimeMillis());
 
                 //Metodo que se encarga del procesamiento
                 procesarInformacion(factura);
@@ -67,20 +67,20 @@ public class ProcesarFacturasLogica {
                 procesarFacturaCron.marcarFacturaProcesada(factura.getFacId(), hilo, factura.getCliente().getCliId());
 
                 horaActualMillis = System.currentTimeMillis();
-                LOG.log(Level.INFO, ">>>> INFO >>> Tiempo de procesamiento actual: ", horaActualMillis);
+                //LOG.log(Level.INFO, ">>>> INFO >>> Tiempo de procesamiento actual: ", horaActualMillis);
                 if ((horaActualMillis - horaIniMillis) >= horasMaxMillis) {
                     factura = null;
                     LOG.log(Level.INFO, ">>>> INFO >>> Se excedio el tiempo maximo de ejecucion de la tarea, proceso suspendido.....");
                 } else {
                     factura = procesarFacturaCron.obtenerSiguienteCargue(hilo);
                 }
-                LOG.log(Level.INFO, "Tiempo fin cargue {0}", System.currentTimeMillis());
+                ////OG.log(Level.INFO, "Tiempo fin cargue {0}", System.currentTimeMillis());
 
             }
             userTransaction.commit();
-            LOG.log(Level.INFO, "----------------------------------------------------------------------");
-            LOG.log(Level.INFO, ">>>> INFO >>> finalizo el procesamiento del hilo {0}", hilo);
-            LOG.log(Level.INFO, "----------------------------------------------------------------------");
+//            LOG.log(Level.INFO, "----------------------------------------------------------------------");
+//            LOG.log(Level.INFO, ">>>> INFO >>> finalizo el procesamiento del hilo {0}", hilo);
+//            LOG.log(Level.INFO, "----------------------------------------------------------------------");
         } catch (Exception e) {
             LOG.log(Level.SEVERE, ">>>> ERROR  >> Error no controlado en el procesamiento!!!!, {0}", e.getLocalizedMessage());
             LOG.log(Level.SEVERE, ">>>> ERROR  >> Error no controlado en el procesamiento!!!!, {0}", e.getLocalizedMessage());

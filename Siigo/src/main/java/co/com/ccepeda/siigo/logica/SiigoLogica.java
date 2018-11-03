@@ -286,7 +286,7 @@ public class SiigoLogica {
     public Response consultarFacturasCargadas() {
         MensajeDTO mensajeDTO = new MensajeDTO();
         mensajeDTO.setCodigo(Constantes.StatusResponse.ERROR.toString());
-        List<Factura> listaFacturas = facturaDAO.listarAll();
+        List<Factura> listaFacturas = facturaDAO.obtnerLos100Ultimos();
         List<InvoiceModel> listaSalida = new ArrayList();
         if (listaFacturas != null) {
             mensajeDTO.setCodigo(Constantes.StatusResponse.OK.toString());

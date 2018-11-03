@@ -27,4 +27,8 @@ public class FacturaDAO extends GenericoDAO<Factura>{
     public List<Factura> consultarFacturasPendienteDIAN(){
         return this.filtrar("Factura.findByFacStateSended", null);
     }
+    
+    public List<Factura> obtnerLos100Ultimos(){
+        return this.filtrar("Factura.findByIdMaxCien", null);
+    }
 }
