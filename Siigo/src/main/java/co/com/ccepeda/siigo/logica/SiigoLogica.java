@@ -63,6 +63,8 @@ public class SiigoLogica {
             String ruta = guardarAdjunto(file, invoiceModel.getCliente().getId(), factura.getFacId());
             if (ruta != null) {
                 factura.setFacUrlfile(ruta);
+                factura.setFacState(Constantes.InvoiceState.received.toString());
+                factura.setFacAction(Constantes.CustomerAction.noAction.toString());
                 factura.setFacCreateddate(new Date());
                 mensajeDTO.setCodigo(Constantes.StatusResponse.OK.toString());
                 mensaje = "Factura creada exitosamente con id {0}";
@@ -97,10 +99,11 @@ public class SiigoLogica {
     private String guardarAdjunto(byte[] pdf, final Long idcliente, final Long idfactura) {
         LOG.log(Level.INFO, "==== Guardando adjunto=====");
         String path = null;
-        LOG.log(Level.INFO, ">>> Path archivo zip >> {0}", path);
+        
         try {
             path = generarUrlArchivo(pdf, idcliente, idfactura);
-            FileOutputStream fileOut = new FileOutputStream(path);
+            LOG.log(Level.INFO, ">>> Path archivo pdf >> {0}", path);
+            FileOutputStream fileOut = new FileOutputStream(path+"\\adjunto.pdf");
             BufferedOutputStream buffer = new BufferedOutputStream(fileOut);
             buffer.write(pdf);
             buffer.flush();

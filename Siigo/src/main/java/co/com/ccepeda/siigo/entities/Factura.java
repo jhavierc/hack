@@ -53,41 +53,32 @@ public class Factura implements Serializable {
     @GeneratedValue(generator = "SeqFacturaId", strategy = GenerationType.SEQUENCE)
     @Column(name = "fac_id")
     private Long facId;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 150)
+    
     @Column(name = "fac_prefix")
     private String facPrefix;
-    @Basic(optional = false)
-    @NotNull
+    
     @Column(name = "fac_consecutive")
     private BigInteger facConsecutive;
-    @Size(max = 250)
+    
     @Column(name = "fac_ubl")
     private String facUbl;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 1500)
+    
     @Column(name = "fac_urlfile")
     private String facUrlfile;
-    @Basic(optional = false)
-    @NotNull
+    
     @Column(name = "fac_createddate")
     @Temporal(TemporalType.TIMESTAMP)
     private Date facCreateddate;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 50)
+    
     @Column(name = "fac_state")
     private String facState;
-    @Size(max = 50)
+    
     @Column(name = "fac_sendstate")
     private String facSendstate;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 2147483647)
+    
     @Column(name = "fac_action")
     private String facAction;
+    
     @JoinColumn(name = "fac_cli_id", referencedColumnName = "cli_id")
     @ManyToOne(optional = false)
     private Cliente cliente;
