@@ -17,4 +17,5 @@ public class LogDTO {
 
     private String status;
     private String error;
+    private Long idfactura;
 }

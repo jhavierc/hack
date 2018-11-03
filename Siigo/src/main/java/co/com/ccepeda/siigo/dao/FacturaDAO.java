@@ -29,6 +29,6 @@ public class FacturaDAO extends GenericoDAO<Factura>{
     }
     
     public List<Factura> obtnerLos100Ultimos(){
-        return this.filtrar("Factura.findByIdMaxCien", null);
+        return this.filtrarPaginacion("Factura.findAll", null,1,100);
     }
 }

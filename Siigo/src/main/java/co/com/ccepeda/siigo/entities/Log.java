@@ -31,7 +31,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "tbl_log")
 @Cacheable(false)
 @NamedQueries({
-    @NamedQuery(name = "Log.findAll", query = "SELECT l FROM Log l")
+    @NamedQuery(name = "Log.findAll", query = "SELECT l FROM Log l order by l.logId desc")
     , @NamedQuery(name = "Log.findByLogId", query = "SELECT l FROM Log l WHERE l.logId = :logId")
     , @NamedQuery(name = "Log.findByIdfactura", query = "SELECT l FROM Log l WHERE l.logFacId.facId = :idfac")})
 public class Log implements Serializable {

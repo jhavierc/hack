@@ -27,4 +27,8 @@ public class LogDAO extends GenericoDAO<Log> {
         params.put("idfac", idFactura);
         return this.filtrar("Log.findByIdfactura", params);
     }
+    
+    public List<Log> consultarLogsPorCantidad(Integer numreg){
+        return this.filtrarPaginacion("Log.findAll", null, 1, numreg);
+    }
 }

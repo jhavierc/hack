@@ -20,5 +20,5 @@ public final class EmailConstantes {
     public static final String EMAIL_ERROR_NOTIFICACION_DIAN="Señ@r administrador, el servicio de la DIAN no está disponible"; 
             
     public static final String EMAIL_ERROR_SAVE_INVOICE ="Señ@r usuario, no se puedo guardar la información de la factura";
-    public static final String EMAIL_OK_SAVE_INVOICE ="Señ@r usuario, se registró la factura con id {0}. El sistema le notificará cuando termine de realizar la validación de la información";
+    public static final String EMAIL_OK_SAVE_INVOICE ="Señ@r usuario, se registró la factura con id {0}. El sistema le notificará cuando termine de realizar la validación de la información.<br>Puede realizar la descarga del archivo adjunto, ingresando al siguien te link <a src=\"http://localhost:4200/api/siigoServices/adjunto/{1}.pdf\">Descargar</a>";
 }

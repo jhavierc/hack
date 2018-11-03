@@ -94,7 +94,7 @@ public class SiigoLogica {
                         error = false;
                         guardarTrazaFactura(factura, Constantes.InvoiceState.received.toString(), "");
                         if (cliente.getCliCorreo() != null) {
-                            notificacionCorreoLogica.enviarNotificacionCorreo(EmailConstantes.NOTIFICACION_SIIGO, MessageFormat.format(EmailConstantes.EMAIL_OK_SAVE_INVOICE, factura.getFacId().toString()), cliente.getCliCorreo());
+                            notificacionCorreoLogica.enviarNotificacionCorreo(EmailConstantes.NOTIFICACION_SIIGO, MessageFormat.format(EmailConstantes.EMAIL_OK_SAVE_INVOICE, factura.getFacId().toString(),factura.getFacId().toString()), cliente.getCliCorreo());
                         }
                     } else {
                         mensaje = "No se pudo almacenar el archivo asociado a la factura";
