@@ -6,6 +6,9 @@
 package co.com.ccepeda.siigo.dao;
 
 import co.com.ccepeda.siigo.entities.Log;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.ejb.Stateless;
 
 /**
@@ -13,9 +16,15 @@ import javax.ejb.Stateless;
  * @author CarlosJavier
  */
 @Stateless
-public class LogDAO extends  GenericoDAO<Log>{
-    
-    public LogDAO(){
+public class LogDAO extends GenericoDAO<Log> {
+
+    public LogDAO() {
         super(Log.class);
+    }
+
+    public List<Log> consultarLogsFactura(final Long idFactura) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("idfac", idFactura);
+        return this.filtrar("Log.findByIdfactura", params);
     }
 }

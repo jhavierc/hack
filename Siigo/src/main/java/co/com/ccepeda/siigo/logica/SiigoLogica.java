@@ -14,6 +14,7 @@ import co.com.ccepeda.siigo.dao.FacturaDAO;
 import co.com.ccepeda.siigo.dao.LogDAO;
 import co.com.ccepeda.siigo.dto.CorreoDTO;
 import co.com.ccepeda.siigo.dto.InvoiceModel;
+import co.com.ccepeda.siigo.dto.LogDTO;
 import co.com.ccepeda.siigo.dto.MensajeDTO;
 import co.com.ccepeda.siigo.dto.ResponseModel;
 import co.com.ccepeda.siigo.entities.Cliente;
@@ -131,7 +132,7 @@ public class SiigoLogica {
         List<Object> errorList = new ArrayList<Object>();
         ResponseModel responseModel = new ResponseModel();
 
-        LOG.log(Level.INFO, "==== Sign adjunto=====Factura {0}, Cliente {1}",new Object[]{factura.getFacId(),factura.getCliente().getCliId()});
+        LOG.log(Level.INFO, "==== Sign adjunto=====Factura {0}, Cliente {1}", new Object[]{factura.getFacId(), factura.getCliente().getCliId()});
         MensajeDTO mensajeDTO = new MensajeDTO();
         mensajeDTO.setCodigo(Constantes.StatusResponse.ERROR.toString());
 
@@ -254,47 +255,45 @@ public class SiigoLogica {
         logDAO.create(log);
     }
 
-   
-
     public static ResponseModel validateInvoice(Factura invoice) {
         List<Object> errorList = new ArrayList<Object>();
         ResponseModel responseModel = new ResponseModel();
-        
+
         boolean valido = true;
-        if(invoice.getFacPrefix()==null || invoice.getFacPrefix().length()==0){
+        if (invoice.getFacPrefix() == null || invoice.getFacPrefix().length() == 0) {
             errorList.add("El prefix es obligatorio");
             valido = false;
         }
-        if(invoice.getFacConsecutive()==null){
+        if (invoice.getFacConsecutive() == null) {
             errorList.add("El consecutive es obligatorio");
             valido = false;
         }
-        if(invoice.getFacUbl()==null || invoice.getFacUbl().length()==0){
+        if (invoice.getFacUbl() == null || invoice.getFacUbl().length() == 0) {
             errorList.add("El UBL es obligatorio");
             valido = false;
         }
         responseModel.setSuccess(valido);
         responseModel.setErrorList(errorList);
-       
+
         return responseModel;
     }
-    
-    
+
     /**
      * Funcionalidad que permite listar todas las facturas del sistema
-     * @return 
+     *
+     * @return
      */
-    public Response consultarFacturasCargadas(){
+    public Response consultarFacturasCargadas() {
         MensajeDTO mensajeDTO = new MensajeDTO();
         mensajeDTO.setCodigo(Constantes.StatusResponse.ERROR.toString());
         List<Factura> listaFacturas = facturaDAO.listarAll();
-        List<InvoiceModel> listaSalida=new ArrayList();
-        if(listaFacturas!=null){
+        List<InvoiceModel> listaSalida = new ArrayList();
+        if (listaFacturas != null) {
             mensajeDTO.setCodigo(Constantes.StatusResponse.OK.toString());
-            
+
             for (Factura factura : listaFacturas) {
-                InvoiceModel invoiceModel =  TransformacionDozer.transformar(factura, InvoiceModel.class);
-                if(factura.getFacUrlfile()!=null){
+                InvoiceModel invoiceModel = TransformacionDozer.transformar(factura, InvoiceModel.class);
+                if (factura.getFacUrlfile() != null) {
                     invoiceModel.setTieneAdjunto(true);
                 }
                 listaSalida.add(invoiceModel);
@@ -303,23 +302,35 @@ public class SiigoLogica {
         } else {
             mensajeDTO.setMensaje("No se encontraron facturas registradas");
         }
-         return Response.ok(mensajeDTO, MediaType.APPLICATION_JSON).build();
+        return Response.ok(mensajeDTO, MediaType.APPLICATION_JSON).build();
     }
-    
-    public byte[] descargarArchivo(final Long idFactura){
+
+    public byte[] descargarArchivo(final Long idFactura) {
         byte[] datos = null;
         Factura factura = facturaDAO.read(idFactura);
-        if(factura!=null){
-            if(factura.getFacUrlfile()!=null){
+        if (factura != null) {
+            if (factura.getFacUrlfile() != null) {
                 try {
-                    datos = Files.readAllBytes(new File(factura.getFacUrlfile()+"\\adjunto.pdf").toPath());
-                    
+                    datos = Files.readAllBytes(new File(factura.getFacUrlfile() + "\\adjunto.pdf").toPath());
+
                 } catch (Exception e) {
                     LOG.log(Level.INFO, ">>> Error al leer el archivo >>");
                 }
             }
         }
         return datos;
+
+    }
+
+    public Response consultarLogsFactura(final Long idFactura) {
+        MensajeDTO mensajeDTO = new MensajeDTO();
+        mensajeDTO.setCodigo(Constantes.StatusResponse.ERROR.toString());
         
+        List<Log> listaLogs = logDAO.consultarLogsFactura(idFactura);
+        if(listaLogs!=null && !listaLogs.isEmpty()){
+            mensajeDTO.setObject(TransformacionDozer.transformar(listaLogs, LogDTO.class));
+            mensajeDTO.setCodigo(Constantes.StatusResponse.OK.toString());
+        }
+        return Response.ok(mensajeDTO, MediaType.APPLICATION_JSON).build();
     }
 }

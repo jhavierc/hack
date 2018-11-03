@@ -56,6 +56,17 @@
         
     </mapping>
     
-   
+    <mapping>
+        <class-a>co.com.ccepeda.siigo.entities.Log</class-a>
+        <class-b>co.com.ccepeda.siigo.dto.LogDTO</class-b>
+        <field>
+            <a>logStatus</a>
+            <b>status</b>
+        </field>
+         <field>
+            <a>logError</a>
+            <b>error</b>
+        </field>
+    </mapping>
     
 </mappings>

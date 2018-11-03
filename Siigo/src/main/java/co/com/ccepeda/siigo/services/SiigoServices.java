@@ -47,6 +47,10 @@ public class SiigoServices {
         return siigoLogica.saveInvoice(invoiceModel);
     }
     
+    /**
+     * Servicio para consultar el listado de facturas registradas en el sistema. se puede mejorar con paginacion
+     * @return 
+     */
     @GET
     @Path("/listFact")
     @Produces(MediaType.APPLICATION_JSON)
@@ -54,6 +58,11 @@ public class SiigoServices {
         return siigoLogica.consultarFacturasCargadas();
     }
     
+    /**
+     * Servicio que permite la descarga del archivo pdf
+     * @param idFactura
+     * @return 
+     */
     @GET
     @Path("/adjunto/{id}.pdf")
     @Produces("application/pdf")
@@ -61,5 +70,15 @@ public class SiigoServices {
         return siigoLogica.descargarArchivo(idFactura);
     }
     
-
+    /**
+     * Servicio que permite consultar los logs de seguimiento de una factura
+     * @param idFactura
+     * @return 
+     */
+    @GET
+    @Path("/log/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response consultarLogs(@PathParam("id") Long idFactura) {
+        return siigoLogica.consultarLogsFactura(idFactura);
+    }
 }

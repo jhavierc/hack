@@ -28,4 +28,9 @@ export class SiigoService {
     descargarArchivoAdjunto(id:number){
         window.open(this.api + ConstantesSiigo.WS_DOWNLOAD_FILE+id+".pdf");
     }
+
+    consultarLogs(id:number):Observable<Mensaje>{
+        return this.httpClient.get<Mensaje>(this.api + ConstantesSiigo.WS_LOGS_FACTURA+id);
+    }
+
 }
