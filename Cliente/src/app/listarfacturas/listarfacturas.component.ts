@@ -19,10 +19,11 @@ export class ListarFacturasComponent implements OnInit {
   closeResult: string;
   listaLog: Log[] = [];
   showDetail: boolean = false;
-  facturaSelected:InvoiceModel;
+  facturaSelected: InvoiceModel;
 
   constructor(private _siigoServices: SiigoService, private modalService: NgbModal) {
     this.alerta = new Alerta();
+    this.showMessage = true;
     this._siigoServices.consultarFacturas().subscribe(
       (data) => {
         if (data.codigo == 'OK') {
@@ -51,14 +52,15 @@ export class ListarFacturasComponent implements OnInit {
   }
 
   verDetalleLog(data) {
+    this.showMessage = true;
     this.facturaSelected = data;
     this._siigoServices.consultarLogs(data.id).subscribe(
       (data) => {
         if (data.codigo == 'OK') {
           this.listaLog = data.object;
           //this.open("Log Facturacion", null, null);
-          this.showDetail=true;
-          
+          this.showDetail = true;
+
         } else {
           this.alerta.type = 'warning';
           this.alerta.strong = 'Warning!';
@@ -67,16 +69,19 @@ export class ListarFacturasComponent implements OnInit {
         }
       },
       (error) => {
-
+        this.alerta.type = 'danger';
+        this.alerta.strong = 'Oh snap!';
+        this.alerta.message = 'Error al consultar la información de las facturas del sistema';
+        this.alerta.icon = 'ui-2_like';
       }
     )
 
   }
 
-  volverLista(){
-    this.facturaSelected=null;
+  volverLista() {
+    this.facturaSelected = null;
     this.listaLog = [];
-    this.showDetail=false;
+    this.showDetail = false;
   }
 
   open(content, type, modalDimension) {
@@ -110,5 +115,27 @@ export class ListarFacturasComponent implements OnInit {
     } else {
       return `with: ${reason}`;
     }
+  }
+
+  reprocesarDian() {
+    this.showMessage = true;
+    this._siigoServices.reprocesarFacturasDian().subscribe(
+      (data) => {
+        if (data.codigo == 'OK') {
+          this.alerta.type = 'success';
+          this.alerta.strong = 'Warning!';
+          this.alerta.message = data.mensaje;
+        } else {
+          this.alerta.type = 'warning';
+          this.alerta.strong = 'Warning!';
+          this.alerta.icon = 'ui-1_bell-53';
+        }
+      }, (error) => {
+        this.alerta.type = 'danger';
+        this.alerta.strong = 'Oh snap!';
+        this.alerta.message = 'Error al consultar la información de las facturas del sistema';
+        this.alerta.icon = 'ui-2_like';
+      }
+    );
   }
 }

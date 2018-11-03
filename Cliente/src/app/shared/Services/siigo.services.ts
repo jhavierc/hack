@@ -33,4 +33,7 @@ export class SiigoService {
         return this.httpClient.get<Mensaje>(this.api + ConstantesSiigo.WS_LOGS_FACTURA+id);
     }
 
+    reprocesarFacturasDian():Observable<Mensaje>{
+        return this.httpClient.get<Mensaje>(this.api + ConstantesSiigo.WS_REPROCESAR_DIAN);
+    }
 }
