@@ -11,8 +11,8 @@ import { NucleoiconsComponent } from './components/nucleoicons/nucleoicons.compo
 import { CargarfacturaComponent } from './cargarfactura/cargarfactura.component';
 
 const routes: Routes =[
-    { path: '', redirectTo: 'index', pathMatch: 'full' },
-    { path: 'index',                component: ComponentsComponent },
+    { path: '', redirectTo: 'home', pathMatch: 'full' },
+    { path: 'home',                component: ComponentsComponent },
     { path: 'nucleoicons',          component: NucleoiconsComponent },
     //{ path: 'examples/landing',     component: LandingComponent },
     //{ path: 'examples/login',       component: LoginComponent },
@@ -24,7 +24,7 @@ const routes: Routes =[
     imports: [
         CommonModule,
         BrowserModule,
-        RouterModule.forRoot(routes)
+        RouterModule.forRoot(routes, { useHash: true })
     ],
     exports: [
     ],

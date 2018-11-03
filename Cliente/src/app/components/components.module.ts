@@ -14,6 +14,7 @@ import { ComponentsComponent } from './components.component';
 import { NotificationComponent } from './notification/notification.component';
 import { NgbdModalBasic } from './modal/modal.component';
 import { CargarfacturaComponent } from '../cargarfactura/cargarfactura.component';
+import { ListarFacturasComponent } from '../listarfacturas/listarfacturas.component';
 
 
 @NgModule({
@@ -26,13 +27,15 @@ import { CargarfacturaComponent } from '../cargarfactura/cargarfactura.component
         JWBootstrapSwitchModule
       ],
     declarations: [
-        ComponentsComponent,CargarfacturaComponent,
+        ComponentsComponent,
         BasicelementsComponent,
         NavigationComponent,
         TypographyComponent,
         NucleoiconsComponent,
         NotificationComponent,
-        NgbdModalBasic
+        NgbdModalBasic,
+        CargarfacturaComponent,
+        ListarFacturasComponent
     ],
     exports:[ ComponentsComponent ]
 })

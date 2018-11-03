@@ -21,4 +21,11 @@ export class SiigoService {
         return this.httpClient.post<Mensaje>(this.api + ConstantesSiigo.WS_REGISTRAR_FACTURA, invoice);
     }
 
+    consultarFacturas():Observable<Mensaje>{
+        return this.httpClient.get<Mensaje>(this.api + ConstantesSiigo.WS_LISTAR_FACTURA);
+    }
+
+    descargarArchivoAdjunto(id:number){
+        window.open(this.api + ConstantesSiigo.WS_DOWNLOAD_FILE+id+".pdf");
+    }
 }

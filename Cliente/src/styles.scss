@@ -1,2 +1,19 @@
 /* You can add global styles to this file, and also import other style files */
 @import "~bootstrap/scss/bootstrap.scss";
+
+
+page-header{
+    height: 30px !important;
+}
+
+.campo_obligatorio {
+    color:rgba(146, 27, 27, 0.664);
+}
+
+.banda_gris {
+    background-color: rgba(184, 187, 187, 0.664);
+}
+
+.color_icon{
+    color:#fff;
+}
