@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  api: 'Siigo/api/'
+  api: 'api/'
 };

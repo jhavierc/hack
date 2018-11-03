@@ -5,5 +5,5 @@
 
 export const environment = {
   production: false,
-  api: 'Siigo/api/'
+  api: 'api/'
 };

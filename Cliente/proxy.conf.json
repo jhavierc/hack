@@ -1,5 +1,5 @@
 {
-  "/Siigo/api/*": {
+  "/api/*": {
     "target": "http://localhost:8050",
     "secure": false,
     "logLevel": "debug",
