@@ -26,8 +26,11 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -47,7 +50,7 @@ public class SiigoLogica {
     @EJB
     private LogDAO logDAO;
     @EJB
-    private EnvioCorreoLogica envioCorreoLogica;
+    private NotificacionCorreoLogica notificacionCorreoLogica;
 
     private static final Logger LOG = Logger.getLogger(SiigoLogica.class.getSimpleName());
 
@@ -89,7 +92,7 @@ public class SiigoLogica {
                         error = false;
                         guardarTrazaFactura(factura, Constantes.InvoiceState.received.toString(), "");
                         if (cliente.getCliCorreo() != null) {
-                            enviarNotificacionCorreo(EmailConstantes.NOTIFICACION_SIIGO, MessageFormat.format(EmailConstantes.EMAIL_OK_SAVE_INVOICE, factura.getFacId().toString()), cliente.getCliCorreo());
+                            notificacionCorreoLogica.enviarNotificacionCorreo(EmailConstantes.NOTIFICACION_SIIGO, MessageFormat.format(EmailConstantes.EMAIL_OK_SAVE_INVOICE, factura.getFacId().toString()), cliente.getCliCorreo());
                         }
                     } else {
                         mensaje = "No se pudo almacenar el archivo asociado a la factura";
@@ -119,23 +122,47 @@ public class SiigoLogica {
      * @param idinvoice
      * @return
      */
-    public Response singInvoice(Long idinvoice) {
+    public ResponseModel singInvoice(Factura factura) {
+
+        final Integer CONSTSeed = 100;
+        final Integer CONSTSleepValue = 2000;
+        final double CONSTErrorProb = 0.1;
+        List<Object> errorList = new ArrayList<Object>();
+        ResponseModel responseModel = new ResponseModel();
 
         LOG.log(Level.INFO, "==== Sign adjunto=====");
         MensajeDTO mensajeDTO = new MensajeDTO();
         mensajeDTO.setCodigo(Constantes.StatusResponse.ERROR.toString());
 
-        Factura factura = facturaDAO.read(idinvoice);
         if (factura != null) {
             if (factura.getCliente().getCliCertificado() != null) {
                 mensajeDTO.setMensaje("Para el final");
+
+                Random random = new Random(CONSTSeed);
+                if (random.nextDouble() <= CONSTErrorProb) {
+                    // [TODO] Implementar cambio de estado por fallo de firma y notificar al administrador del sistema
+
+                    factura.setFacState(Constantes.InvoiceState.signError.toString());
+                    guardarTrazaFactura(factura, Constantes.InvoiceState.signError.toString(), "");
+                    responseModel.setSuccess(false);
+                    errorList.add("Error al firmar el documento");
+                    responseModel.setErrorList(errorList);
+                    notificacionCorreoLogica.enviarNotificacionCorreo(EmailConstantes.NOTIFICACION_SIIGO, EmailConstantes.EMAIL_ERROR_SING_FACTURA, "admin@siigo.com");
+                } else {
+                    // [TODO] Implementar actualizacion de UBL de factura asumiendo firma exitosa y cambio de estado
+                    factura.setFacState(Constantes.InvoiceState.signed.toString());
+                    guardarTrazaFactura(factura, Constantes.InvoiceState.signed.toString(), "");
+                    responseModel.setSuccess(true);
+
+                }
+                facturaDAO.update(factura);
             } else {
                 mensajeDTO.setMensaje("El cliente no tiene parametrizado el Certificado");
             }
         } else {
-            mensajeDTO.setMensaje(MessageFormat.format("La factura con id {0}, no se encuentra registrada", idinvoice));
+            mensajeDTO.setMensaje("La factura con id {0}, no se encuentra registrada");
         }
-        return Response.ok(mensajeDTO, MediaType.APPLICATION_JSON).build();
+        return responseModel;
     }
 
     public Response sendInvoice(InvoiceModel invoiceModel) {
@@ -226,14 +253,28 @@ public class SiigoLogica {
         logDAO.create(log);
     }
 
-    private void enviarNotificacionCorreo(String titulo, String mensaje, String correo) {
-        CorreoDTO correoDTO = new CorreoDTO();
-        correoDTO.setAsunto(titulo);
-        correoDTO.setDestino(correo);
-        correoDTO.setMensaje(mensaje);
-        //Estos datos se pueden sacar desde unas constantes en base de datos
-        correoDTO.setUserCorreo("notify@siggo.com");
-        correoDTO.setPassword("contreasenia");
-        envioCorreoLogica.sendEmail(correoDTO);
+   
+
+    public static ResponseModel validateInvoice(Factura invoice) {
+        List<Object> errorList = new ArrayList<Object>();
+        ResponseModel responseModel = new ResponseModel();
+        
+        boolean valido = true;
+        if(invoice.getFacPrefix()==null || invoice.getFacPrefix().length()==0){
+            errorList.add("El prefix es obligatorio");
+            valido = false;
+        }
+        if(invoice.getFacConsecutive()==null){
+            errorList.add("El consecutive es obligatorio");
+            valido = false;
+        }
+        if(invoice.getFacUbl()==null || invoice.getFacUbl().length()==0){
+            errorList.add("El UBL es obligatorio");
+            valido = false;
+        }
+        responseModel.setSuccess(valido);
+        responseModel.setErrorList(errorList);
+       
+        return responseModel;
     }
 }

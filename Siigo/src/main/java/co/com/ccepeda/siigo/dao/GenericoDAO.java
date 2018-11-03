@@ -142,8 +142,10 @@ public class GenericoDAO<T> implements Serializable {
     public List<T> filtrar(String jpql, Map<String, Object> params) {
         try {
             Query query = entityManager.createNamedQuery(jpql);
-            for (String key : params.keySet()) {
-                query.setParameter(key, params.get(key));
+            if (params != null) {
+                for (String key : params.keySet()) {
+                    query.setParameter(key, params.get(key));
+                }
             }
             return (List<T>) query.getResultList();
         } catch (NoResultException | ClassCastException e) {

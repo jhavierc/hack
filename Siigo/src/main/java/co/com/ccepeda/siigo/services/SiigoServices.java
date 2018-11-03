@@ -47,14 +47,4 @@ public class SiigoServices {
         return siigoLogica.saveInvoice(invoiceModel);
     }
 
-    /**
-     * Servicio que permite firmar un archivo
-     * @param id Identificador de la factura a firmar
-     * @return 
-     */
-    @GET
-    @Path("/SignInvoice")
-    public Response saveInvoice(@PathParam("id") Long id) {
-        return siigoLogica.singInvoice(id);
-    }
 }

@@ -23,6 +23,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -41,9 +42,11 @@ import javax.validation.constraints.Size;
     , @NamedQuery(name = "Factura.findByFacUbl", query = "SELECT f FROM Factura f WHERE f.facUbl = :facUbl")
     , @NamedQuery(name = "Factura.findByFacUrlfile", query = "SELECT f FROM Factura f WHERE f.facUrlfile = :facUrlfile")
     , @NamedQuery(name = "Factura.findByFacCreateddate", query = "SELECT f FROM Factura f WHERE f.facCreateddate = :facCreateddate")
-    , @NamedQuery(name = "Factura.findByFacState", query = "SELECT f FROM Factura f WHERE f.facState = :facState")
+    , @NamedQuery(name = "Factura.findByFacStateReceived", query = "SELECT f FROM Factura f WHERE f.facState = 'received'")
     , @NamedQuery(name = "Factura.findByFacSendstate", query = "SELECT f FROM Factura f WHERE f.facSendstate = :facSendstate")
-    , @NamedQuery(name = "Factura.findByFacAction", query = "SELECT f FROM Factura f WHERE f.facAction = :facAction")})
+    , @NamedQuery(name = "Factura.findByFacAction", query = "SELECT f FROM Factura f WHERE f.facAction = :facAction")
+
+})
 public class Factura implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -53,35 +56,38 @@ public class Factura implements Serializable {
     @GeneratedValue(generator = "SeqFacturaId", strategy = GenerationType.SEQUENCE)
     @Column(name = "fac_id")
     private Long facId;
-    
+
     @Column(name = "fac_prefix")
     private String facPrefix;
-    
+
     @Column(name = "fac_consecutive")
     private BigInteger facConsecutive;
-    
+
     @Column(name = "fac_ubl")
     private String facUbl;
-    
+
     @Column(name = "fac_urlfile")
     private String facUrlfile;
-    
+
     @Column(name = "fac_createddate")
     @Temporal(TemporalType.TIMESTAMP)
     private Date facCreateddate;
-    
+
     @Column(name = "fac_state")
     private String facState;
-    
+
     @Column(name = "fac_sendstate")
     private String facSendstate;
-    
+
     @Column(name = "fac_action")
     private String facAction;
-    
+
     @JoinColumn(name = "fac_cli_id", referencedColumnName = "cli_id")
     @ManyToOne(optional = false)
     private Cliente cliente;
+
+    @Transient
+    private boolean procesado;
 
     public Long getFacId() {
         return facId;
@@ -161,6 +167,19 @@ public class Factura implements Serializable {
 
     public void setCliente(Cliente cliente) {
         this.cliente = cliente;
+    }
+
+    public boolean isProcesado() {
+        return procesado;
+    }
+
+    public void setProcesado(boolean procesado) {
+        this.procesado = procesado;
+    }
+
+    @Override
+    public String toString() {
+        return "Factura{" + "facId=" + facId + ", facPrefix=" + facPrefix + ", facConsecutive=" + facConsecutive + ", facUbl=" + facUbl + ", facUrlfile=" + facUrlfile + ", facCreateddate=" + facCreateddate + ", facState=" + facState + ", facSendstate=" + facSendstate + ", facAction=" + facAction + ", cliente=" + cliente + ", procesado=" + procesado + '}';
     }
 
 }

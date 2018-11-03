@@ -6,6 +6,7 @@
 package co.com.ccepeda.siigo.dao;
 
 import co.com.ccepeda.siigo.entities.Factura;
+import java.util.List;
 import javax.ejb.Stateless;
 
 /**
@@ -17,5 +18,9 @@ public class FacturaDAO extends GenericoDAO<Factura>{
     
     public FacturaDAO(){
         super(Factura.class);
+    }
+    
+    public List<Factura> consultarFacturasCargadas(){
+        return this.filtrar("Factura.findByFacStateReceived", null);
     }
 }
