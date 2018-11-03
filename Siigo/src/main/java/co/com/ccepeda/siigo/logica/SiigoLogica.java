@@ -18,7 +18,10 @@ import co.com.ccepeda.siigo.dto.ResponseModel;
 import co.com.ccepeda.siigo.entities.Factura;
 import co.com.ccepeda.siigo.util.Constantes;
 import co.com.ccepeda.siigo.util.TransformacionDozer;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.text.MessageFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.logging.Level;
@@ -41,26 +44,39 @@ public class SiigoLogica {
 
     private static final Logger LOG = Logger.getLogger(SiigoLogica.class.getSimpleName());
 
+    /**
+     * Lógica para la creacion de las facturas
+     * @param invoiceModel
+     * @return 
+     */
     public Response saveInvoice(InvoiceModel invoiceModel) {
+        
+        boolean error = true;
         MensajeDTO mensajeDTO = new MensajeDTO();
         mensajeDTO.setCodigo(Constantes.StatusResponse.OK.toString());
-
         Factura factura = TransformacionDozer.transformar(invoiceModel, Factura.class);
         facturaDAO.create(factura);
 
-        String mensaje;
+        String mensaje = "";
         if (invoiceModel.getPdfFile() != null) {
-
             byte[] file = Base64.decodeBase64(invoiceModel.getPdfFile());
             String ruta = guardarAdjunto(file, invoiceModel.getCliente().getId(), factura.getFacId());
-            factura.setFacUrlfile(ruta);
-            
-            
-            
-            
-
+            if (ruta != null) {
+                factura.setFacUrlfile(ruta);
+                factura.setFacCreateddate(new Date());
+                mensajeDTO.setCodigo(Constantes.StatusResponse.OK.toString());
+                mensaje = "Factura creada exitosamente con id {0}";
+                error = false;
+            } else {
+                mensaje = "No se pudo almacenar el archivo asociado a la factura";
+            }
         } else {
             mensaje = "Debe adjuntar el pdf";
+        }
+        if(error){
+            mensajeDTO.setMensaje(mensaje);
+        } else {
+            mensajeDTO.setMensaje(MessageFormat.format(mensaje,factura.getFacId()));
         }
         return Response.ok(mensajeDTO, MediaType.APPLICATION_JSON).build();
     }
@@ -70,14 +86,41 @@ public class SiigoLogica {
         return Response.ok(responseModel, MediaType.APPLICATION_JSON).build();
     }
 
+    /**
+     * FUncionalida que permite guardar un archivo en un fileSistem
+     *
+     * @param pdf
+     * @param idcliente
+     * @param idfactura
+     * @return
+     */
     private String guardarAdjunto(byte[] pdf, final Long idcliente, final Long idfactura) {
         LOG.log(Level.INFO, "==== Guardando adjunto=====");
-        String path = generarUrlArchivo(pdf, idcliente, idfactura);
-        
+        String path = null;
+        LOG.log(Level.INFO, ">>> Path archivo zip >> {0}", path);
+        try {
+            path = generarUrlArchivo(pdf, idcliente, idfactura);
+            FileOutputStream fileOut = new FileOutputStream(path);
+            BufferedOutputStream buffer = new BufferedOutputStream(fileOut);
+            buffer.write(pdf);
+            buffer.flush();
+            buffer.close();
+            fileOut.close();
+        } catch (Exception e) {
+            LOG.log(Level.SEVERE, "Error al guardar el archivo adjunto {0}", e.getCause());
+        }
         return path;
 
     }
 
+    /**
+     * Funcionalidad que permite generar la url del archivo a guardar
+     *
+     * @param pdf Bytes del archivo
+     * @param idcliente Identificador del cliente
+     * @param idfactura Identificador de la factura asociada
+     * @return Url del path generado
+     */
     private String generarUrlArchivo(byte[] pdf, final Long idcliente, final Long idfactura) {
         String pathBase = "D:\\SIIGO\\FileSistem\\";
         Date fechaSistema = new Date();
