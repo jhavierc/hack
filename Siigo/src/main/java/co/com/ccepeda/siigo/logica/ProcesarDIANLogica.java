@@ -82,6 +82,12 @@ public class ProcesarDIANLogica {
         return responseModel;
     }
 
+    /**
+     * Permite validar si ya pasaron 24 horas de la caida del servicio de la
+     * DIAN
+     *
+     * @param exception
+     */
     private void validarNotificacionWsDIANNoDisponible(Exception exception) {
         if (exception != null) {
             Date fecha = new Date();
@@ -90,10 +96,17 @@ public class ProcesarDIANLogica {
                 if (logDian != null) {
                     Integer dato = FechaUtil.diferenciaDeDosFechasEnDias(fecha, logDian.getLogdianUltimacaida());
                     if (dato >= 1) {
-                        notificacionCorreoLogica.enviarNotificacionCorreo(EmailConstantes.NOTIFICACION_SIIGO,EmailConstantes.EMAIL_ERROR_NOTIFICACION_DIAN,"admin@siigo.com");
+                        notificacionCorreoLogica.enviarNotificacionCorreo(EmailConstantes.NOTIFICACION_SIIGO, EmailConstantes.EMAIL_ERROR_NOTIFICACION_DIAN, "admin@siigo.com");
+                        logDian.setLogdianEstado("INACTIVO");
+                        logDianDAO.update(logDian);
                     }
                     //se valida 24 horas con respecto a la fecha del sistema
                 }
+            } else {
+                LogDian logDian = new LogDian();
+                logDian.setLogdianEstado("ACTIVO");
+                logDian.setLogdianUltimacaida(fecha);
+                logDianDAO.create(logDian);
             }
         }
     }

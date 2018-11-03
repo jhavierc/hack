@@ -42,6 +42,10 @@ public class ProcesarFacturasLogica {
     private SiigoLogica siigoLogica;
     @EJB
     private LogDAO logDAO;
+    @EJB
+    private ProcesarDIANLogica procesarDIANLogica;
+    @EJB
+    private ConfirmacionDIANLogica confirmacionDIANLogica;
 
     private static final Logger LOG = Logger.getLogger(ProcesarFacturasLogica.class.getSimpleName());
 
@@ -50,7 +54,7 @@ public class ProcesarFacturasLogica {
     public void procesarCargue(Factura factura, int hilo, long horaIniMillis, long horasMaxMillis) {
         long horaActualMillis;
         try {
-            //userTransaction.begin();
+            userTransaction.begin();
 
             while (factura != null) {
 
@@ -73,6 +77,7 @@ public class ProcesarFacturasLogica {
                 LOG.log(Level.INFO, "Tiempo fin cargue {0}", System.currentTimeMillis());
 
             }
+            userTransaction.commit();
             LOG.log(Level.INFO, "----------------------------------------------------------------------");
             LOG.log(Level.INFO, ">>>> INFO >>> finalizo el procesamiento del hilo {0}", hilo);
             LOG.log(Level.INFO, "----------------------------------------------------------------------");
@@ -94,19 +99,26 @@ public class ProcesarFacturasLogica {
     }
 
     private void procesarInformacion(Factura factura) {
-        LOG.log(Level.INFO, "--PASO 2--");
+        LOG.log(Level.INFO, "--PASO 2-- Factura {0}", factura.getFacId());
 
         ResponseModel responseModel = siigoLogica.singInvoice(factura);
         if (responseModel.isSuccess()) {
-
+            LOG.log(Level.INFO, "--PASO 3-- Factura {0}", factura.getFacId());
             //Se lanza la tarea 3
             responseModel = siigoLogica.validateInvoice(factura);
             if (responseModel.isSuccess()) {
+                LOG.log(Level.INFO, "--PASO 4-- Factura {0}", factura.getFacId());
                 //Se lanza tarea 4, validacion DIAN
-                
-                
-                
+                responseModel = procesarDIANLogica.sendInvoice(factura);
+                if (responseModel.isSuccess()) {
+                    LOG.log(Level.INFO, "--PASO 5-- Factura {0}", factura.getFacId());
+                    guardarTrazaFactura(factura, responseModel.getErrorList());
+                    //LLamado asyncrono para confirmar factua DIAN
+                    confirmacionDIANLogica.confirmState(factura);
 
+                } else {
+                    guardarTrazaFactura(factura, responseModel.getErrorList());
+                }
             } else {
                 guardarTrazaFactura(factura, responseModel.getErrorList());
             }
@@ -117,13 +129,21 @@ public class ProcesarFacturasLogica {
 
     private void guardarTrazaFactura(Factura factura, List<Object> errores) {
 
-        for (Object errore : errores) {
-            Log log = new Log();
-            log.setLogId(UUID.randomUUID().toString());
-            log.setLogFacId(factura);
-            log.setLogStatus(factura.getFacState());
-            log.setLogError(String.valueOf(errore));
-            logDAO.create(log);
+        if (errores != null) {
+            for (Object errore : errores) {
+                Log log = new Log();
+                log.setLogId(UUID.randomUUID().toString());
+                log.setLogFacId(factura);
+                log.setLogStatus(factura.getFacState());
+                log.setLogError(String.valueOf(errore));
+                logDAO.create(log);
+            }
+        } else {
+              Log log = new Log();
+                log.setLogId(UUID.randomUUID().toString());
+                log.setLogFacId(factura);
+                log.setLogStatus(factura.getFacState());
+                logDAO.create(log);
         }
 
     }

@@ -7,6 +7,7 @@ package co.com.ccepeda.siigo.cron;
 
 import co.com.ccepeda.siigo.dao.FacturaDAO;
 import co.com.ccepeda.siigo.entities.Factura;
+import co.com.ccepeda.siigo.logica.ProcesarFacturasLogica;
 import co.com.ccepeda.siigo.logica.SiigoLogica;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -31,6 +32,8 @@ public class ProcesarFacturaCron {
 
     @EJB
     private FacturaDAO facturaDAO;
+    @EJB
+    private ProcesarFacturasLogica procesarFacturasLogica;
 
     private ConcurrentHashMap<Long, Integer> hilos = new ConcurrentHashMap<>();
     private List<Factura> listaFacturas = new ArrayList<Factura>();
@@ -98,9 +101,11 @@ public class ProcesarFacturaCron {
         return null;
     }
 
-    @Schedule(second = "0", minute = "*", hour = "*", persistent = true)
+    @Schedule(second = "0", minute = "/15", hour = "*", persistent = true)
     //@TransactionAttribute(TransactionAttributeType.NEVER)
     public void procesarCarguesFacturas() {
+        
+        LOG.log(Level.INFO, "============= TAREAS PROGRAMADAS!!!! ===========");
         LOG.log(Level.INFO, "============= PROCESAR CARGUES FACTURAS --- Inicia ejecucion tarea programada.===========");
 
         iniciarProceso();
@@ -121,9 +126,7 @@ public class ProcesarFacturaCron {
  
         int i = 1;
         for (Factura cargue : carguesIniciales) {
-           
-            //procesarInformacionLogica.procesarCargue(cargue, i, horaIniMillis, horasMaxMillis);
-           // procesarCargueLogica.procesarCargue(cargue, i, horaIniMillis, horasMaxMillis);
+            procesarFacturasLogica.procesarCargue(cargue, i, horaIniMillis, horasMaxMillis);
             i++;
         }
     }

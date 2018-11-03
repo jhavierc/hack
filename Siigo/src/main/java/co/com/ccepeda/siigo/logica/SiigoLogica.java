@@ -130,7 +130,7 @@ public class SiigoLogica {
         List<Object> errorList = new ArrayList<Object>();
         ResponseModel responseModel = new ResponseModel();
 
-        LOG.log(Level.INFO, "==== Sign adjunto=====");
+        LOG.log(Level.INFO, "==== Sign adjunto=====Factura {0}, Cliente {1}",new Object[]{factura.getFacId(),factura.getCliente().getCliId()});
         MensajeDTO mensajeDTO = new MensajeDTO();
         mensajeDTO.setCodigo(Constantes.StatusResponse.ERROR.toString());
 

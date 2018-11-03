@@ -43,14 +43,10 @@ public class Cliente implements Serializable {
     @GeneratedValue(generator = "SeqClienteId", strategy = GenerationType.SEQUENCE)
     @Column(name = "cli_id")
     private Long cliId;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 50)
+    
     @Column(name = "cli_nit")
     private String cliNit;
-    @Basic(optional = false)
-    @NotNull
-    @Lob
+    
     @Column(name = "cli_certificado")
     private byte[] cliCertificado;
     
