@@ -7,13 +7,17 @@ package co.com.ccepeda.siigo.entities;
 
 import java.io.Serializable;
 import javax.persistence.Basic;
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -25,7 +29,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @Entity
 @Table(name = "tbl_log")
-@XmlRootElement
+@Cacheable(false)
 @NamedQueries({
     @NamedQuery(name = "Log.findAll", query = "SELECT l FROM Log l")
     , @NamedQuery(name = "Log.findByLogId", query = "SELECT l FROM Log l WHERE l.logId = :logId")
@@ -34,19 +38,18 @@ public class Log implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 150)
     @Column(name = "log_id")
     private String logId;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 50)
+
     @Column(name = "log_status")
     private String logStatus;
+
     @JoinColumn(name = "log_fac_id", referencedColumnName = "fac_id")
     @ManyToOne(optional = false)
     private Factura logFacId;
+
+    @Column(name = "log_error")
+    private String logError;
 
     public Log() {
     }
@@ -108,5 +111,13 @@ public class Log implements Serializable {
     public String toString() {
         return "co.com.ccepeda.siigo.entities.Log[ logId=" + logId + " ]";
     }
-    
+
+    public String getLogError() {
+        return logError;
+    }
+
+    public void setLogError(String logError) {
+        this.logError = logError;
+    }
+
 }

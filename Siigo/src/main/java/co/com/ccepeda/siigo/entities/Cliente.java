@@ -53,6 +53,9 @@ public class Cliente implements Serializable {
     @Lob
     @Column(name = "cli_certificado")
     private byte[] cliCertificado;
+    
+    @Column(name = "cli_correo")
+    private String cliCorreo;
 
     public Long getCliId() {
         return cliId;
@@ -78,4 +81,13 @@ public class Cliente implements Serializable {
         this.cliCertificado = cliCertificado;
     }
 
+    public String getCliCorreo() {
+        return cliCorreo;
+    }
+
+    public void setCliCorreo(String cliCorreo) {
+        this.cliCorreo = cliCorreo;
+    }
+
+    
 }

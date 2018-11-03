@@ -1,0 +1,22 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package co.com.ccepeda.siigo.util;
+
+/**
+ *
+ * @author CarlosJavier
+ */
+public final class EmailConstantes {
+    
+    private EmailConstantes(){
+        
+    }
+    public static final String NOTIFICACION_SIIGO ="NOTIFICACIONES SIIGO";
+            
+            
+    public static final String EMAIL_ERROR_SAVE_INVOICE ="Señ@r usuario, no se puedo guardar la información de la factura";
+    public static final String EMAIL_OK_SAVE_INVOICE ="Señ@r usuario, se registró la factura con id {0}. El sistema le notificará cuando termine de realizar la validación de la información";
+}

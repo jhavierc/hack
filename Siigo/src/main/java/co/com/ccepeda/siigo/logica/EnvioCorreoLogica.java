@@ -11,6 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
+import javax.ejb.Stateless;
 import javax.mail.BodyPart;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -25,6 +26,7 @@ import javax.mail.internet.MimeMultipart;
  *
  * @author CarlosJavier
  */
+@Stateless
 public class EnvioCorreoLogica {
 
     private static final Properties properties = new Properties();
@@ -145,7 +147,8 @@ public class EnvioCorreoLogica {
         correoDTO.setUsuario("Carlos Cepeda");
         correoDTO.setTitulo("Test");
         correoDTO.setFooter("Para mayor información contactenos en : ");
-        correoDTO.setPassword("");
+        correoDTO.setPassword("Contraseña app");
+        correoDTO.setUserCorreo("contraseña administracion");    
 
         //correoDTO.setRutaArchivo("C:\\developer.jpeg");
         //correoDTO.setNombreArchivo("developer.jpeg");
