@@ -11,6 +11,7 @@ import com.nexmo.client.auth.AuthMethod;
 import com.nexmo.client.auth.TokenAuthMethod;
 import com.nexmo.client.sms.SmsSubmissionResult;
 import com.nexmo.client.sms.messages.TextMessage;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
 
@@ -21,13 +22,13 @@ import javax.ejb.Stateless;
 @Stateless
 public class EnviarSMSLogica {
 
-    
     private static final Logger LOG = Logger.getLogger(EnviarSMSLogica.class.getSimpleName());
-    
+
     /**
      * FUncionalidad que permite enviar mensajes de texto
+     *
      * @param celular
-     * @param mensaje 
+     * @param mensaje
      */
     public void enviarMensaje(String celular, String mensaje) {
         try {
@@ -41,6 +42,7 @@ public class EnviarSMSLogica {
                 System.out.println(response);
             }
         } catch (Exception e) {
+            LOG.log(Level.SEVERE, "Error al enviar el mensaje de texto, error {0}", e.getLocalizedMessage());
         }
 
     }
